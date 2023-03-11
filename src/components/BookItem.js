@@ -14,7 +14,7 @@ const BookItem = (props) => {
               `url(${props.cover})`,
           }}
         ></div>
-      <BookShelfChanger />
+      <BookShelfChanger book={props.book}  moveBook={props.moveBook}/>
       </div>
       <div className={classes['book-title']}>{props.title}</div>
       <div className={classes['book-authors']}>{props.authors.map(author=>author)}</div>

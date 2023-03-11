@@ -8,9 +8,11 @@ const BooksList = (props) => {
             {props.booksList.map(book => 
                 <li key={book.id}>
                 <BookItem 
+                book={book}
                 title={book.title}
-                cover={book.imageLinks.smallThumbnail}
+                cover={book.imageLinks.thumbnail}
                 authors={book.authors}
+                moveBook={props.moveBook}
                 />
                 </li>
                 

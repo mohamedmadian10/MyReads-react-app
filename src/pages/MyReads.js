@@ -1,60 +1,34 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 
-import classes from './MyReads.module.css';
+import classes from "./MyReads.module.css";
 
-import Header from '../UI/Header';
-import { getAll } from '../BooksAPI'
-import BookItem from '../components/BookItem';
-import BookShelfChanger from '../components/BookShelfChanger';
-import BooksList from '../components/BooksList';
+import Header from "../UI/Header";
+import { getAll } from "../BooksAPI";
+import BooksCategory from "../components/BooksCategory";
 
-const MyReads = () => {
-    const [isLoading, setIsLoading] = useState(true);
-    const [currentlyReading, setCurrentlyReading] = useState([]);
-    const [wantToRead, setWantToRead] = useState([]);
-    const [read, setRead] = useState([]);
-    const [httpError, setHttpError] = useState(null)
-
-    useEffect(() => {
-        setIsLoading(true);
-        const getBooks = async () => {
-            const response = await getAll();
-            console.log(response);
-            setCurrentlyReading(response.filter(book => book.shelf === 'currentlyReading'));
-            setWantToRead(response.filter(book => book.shelf === 'wantToRead'));
-            setRead(response.filter(book => book.shelf === 'read'));
-            setIsLoading(false);
-        }
-        getBooks().catch(error => {
-            setIsLoading(false);
-            setHttpError(error.message)
-            console.log(error);
-        });
-    }, [])
+const MyReads = (props) => {
+  const categoryBooks = [
+    { key: "currentlyReading", name: "Currently Reading" },
+    { key: "wantToRead", name: "Want to Read" },
+    { key: "read", name: "Read" },
+  ];
   return (
-    <div className='list-books'>
-     <Header />
-     {isLoading && <p className= {classes.loading}>Loading...</p>}
-     {!isLoading && !httpError &&
-      <div className={classes['list-books-content}']}>
-        <div>
-          <div className={classes.bookshelf}>
-            <h2 className={classes['bookshelf-title']}>Currently Reading</h2>
-            <BooksList booksList={currentlyReading}/>
-          </div>
-          <div className={classes.bookshelf}>
-            <h2 className={classes['bookshelf-title']}>Want to Read</h2>
-           <BooksList booksList={wantToRead}/>
-          </div>
-          <div className={classes.bookshelf}>
-            <h2 className={classes['bookshelf-title']}>Read</h2>
-            <BooksList booksList={read}/>
-          </div>
+    <div className="list-books">
+      <Header />
+      {props.isLoading && <p className={classes.loading}>Loading...</p>}
+      {!props.isLoading && !props.httpError && (
+        <div className={classes["list-books-content}"]}>
+          <BooksCategory
+            books={props.books}
+            categoryBooks={categoryBooks}
+            moveBook={props.moveBook}
+          />
         </div>
-      </div>     
-     }
-     {!isLoading && httpError && <p className={classes.error}>{httpError}</p>}
-      <div className='open-search'>
+      )}
+      {!props.isLoading && props.httpError && (
+        <p className={classes.error}>{props.httpError}</p>
+      )}
+      <div className="open-search">
         <a>Add a book</a>
       </div>
     </div>
