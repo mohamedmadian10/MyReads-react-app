@@ -1,23 +1,23 @@
-import { useEffect, useState } from "react";
+import classes from './MyReads.module.css';
+import Header from '../components/UI/Header';
+import BooksCategory from '../components/BooksCategory';
+import ErrorWrapper from '../components/Helpers/ErrorWrapper';
+import Loader from '../components/Helpers/Loader';
+import { Link } from 'react-router-dom';
 
-import classes from "./MyReads.module.css";
-
-import Header from "../UI/Header";
-import { getAll } from "../BooksAPI";
-import BooksCategory from "../components/BooksCategory";
 
 const MyReads = (props) => {
   const categoryBooks = [
-    { key: "currentlyReading", name: "Currently Reading" },
-    { key: "wantToRead", name: "Want to Read" },
-    { key: "read", name: "Read" },
+    { key: 'currentlyReading', name: 'Currently Reading' },
+    { key: 'wantToRead', name: 'Want to Read' },
+    { key: 'read', name: 'Read' },
   ];
   return (
-    <div className="list-books">
+    <div className='list-books'>
       <Header />
-      {props.isLoading && <p className={classes.loading}>Loading...</p>}
+      {props.isLoading && <Loader />}
       {!props.isLoading && !props.httpError && (
-        <div className={classes["list-books-content}"]}>
+        <div className={classes['list-books-content}']}>
           <BooksCategory
             books={props.books}
             categoryBooks={categoryBooks}
@@ -26,10 +26,10 @@ const MyReads = (props) => {
         </div>
       )}
       {!props.isLoading && props.httpError && (
-        <p className={classes.error}>{props.httpError}</p>
+        <ErrorWrapper httpError={props.httpError} />
       )}
-      <div className="open-search">
-        <a>Add a book</a>
+      <div className='open-search'>
+        <Link to='/search'>Add a book</Link>
       </div>
     </div>
   );

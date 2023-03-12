@@ -1,59 +1,93 @@
-import "./App.css";
-import { useState } from "react";
-import MyReads from "./pages/MyReads";
-import SearchBook from "./pages/SearchBook";
+import './App.css';
+import { useState, useEffect } from 'react';
+import { Route, Routes } from 'react-router-dom';
 
-import { useEffect } from "react";
+import MyReads from './pages/MyReads';
+import SearchBook from './pages/SearchBook';
 
-import { getAll, update } from "./BooksAPI";
+import { getAll, update, search } from './BooksAPI';
 
 function App() {
-  const [showSearchPage, setShowSearchpage] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [books, setBooks] = useState([]);
+  const [searchedBooks, setSearchedBooks] = useState([]);
   const [httpError, setHttpError] = useState(null);
 
   const moveBookHandler = (selectedBook, selectedCategory) => {
     update(selectedBook, selectedCategory).then((res) => {
-      console.log(res);
     });
-    const updatedBooks = books.map(book => {
-      if (book.id === selectedBook.id) {
-        book.shelf = selectedCategory;
-      }
-      return book;
-    });
+    let updatedBooks = books.filter(book => book.id !== selectedBook.id);
+    if (selectedCategory !== 'none') {
+      selectedBook.shelf = selectedCategory;
+      updatedBooks = updatedBooks.concat(selectedBook);
+    }
     setBooks(updatedBooks);
-    console.log(updatedBooks)
   };
 
   useEffect(() => {
     setIsLoading(true);
     const getBooks = async () => {
       const response = await getAll();
-      console.log(response);
       setBooks(response);
       setIsLoading(false);
     };
     getBooks().catch((error) => {
       setIsLoading(false);
       setHttpError(error.message);
-      console.log(error);
     });
   }, []);
 
+  const searchHandler = (seachedBooks) => {
+    setIsLoading(true);
+    if (seachedBooks.length > 0) {
+      search(seachedBooks).then((res) => {
+        setIsLoading(false);
+        if (res.error) {
+          setSearchedBooks([]);
+          setHttpError('No Results, Please Search another Book.');
+        } else {
+          setSearchedBooks(res);
+          setHttpError(null);
+        }
+      });
+    } else {
+      setSearchedBooks([]);
+      setIsLoading(false);
+    }
+  };
+
+  const resetSearchHandler = () => {
+    setSearchedBooks([]);
+  }
+
   return (
-    <div className="app">
-      {showSearchPage ? (
-        <SearchBook />
-      ) : (
-        <MyReads
-          books={books}
-          isLoading={isLoading}
-          httpError={httpError}
-          moveBook={moveBookHandler}
-        />
-      )}
+    <div className='app'>
+      <Routes>
+        <Route
+          path='/'
+          element={
+            <MyReads
+              books={books}
+              isLoading={isLoading}
+              httpError={httpError}
+              moveBook={moveBookHandler}
+            />
+          }
+        ></Route>
+        <Route
+          path='/search'
+          element={
+            <SearchBook
+              searchedBooks={searchedBooks}
+              isLoading={isLoading}
+              httpError={httpError}
+              moveBook={moveBookHandler}
+              onSearch={searchHandler}
+              onResetSearch={resetSearchHandler}
+            />
+          }
+        ></Route>
+      </Routes>
     </div>
   );
 }

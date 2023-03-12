@@ -1,5 +1,5 @@
-import classes from "./BooksCategory.module.css";
-import BooksList from "../components/BooksList";
+import classes from './BooksCategory.module.css';
+import BooksList from '../components/BooksList';
 
 const BooksCategory = (props) => {
   return (
@@ -7,7 +7,7 @@ const BooksCategory = (props) => {
       {props.categoryBooks.map((category) => {
         return (
           <div className={classes.bookshelf} key={category.key}>
-            <h2 className={classes["bookshelf-title"]}>{category.name}</h2>
+            <h2 className={classes['bookshelf-title']}>{category.name}</h2>
             <BooksList
               booksList={props.books.filter(
                 (book) => book.shelf === category.key
