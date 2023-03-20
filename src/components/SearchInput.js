@@ -1,10 +1,13 @@
+import { useDispatch } from 'react-redux';
+import { searchBook } from '../store/books-actions';
 import classes from './SearchInput.module.css';
 const SearchInput = (props) => {
+  const dispatch = useDispatch();
 
   const searchHandler = (event) => {
-    props.onSearch(event.target.value);
+    dispatch(searchBook(event.target.value));
   };
-  
+
   return (
     <div className={classes['search-books-input-wrapper']}>
       <input

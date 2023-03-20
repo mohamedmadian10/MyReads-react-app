@@ -1,15 +1,20 @@
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 import BooksList from '../components/BooksList';
 import ErrorWrapper from '../components/Helpers/ErrorWrapper';
 import Loader from '../components/Helpers/Loader';
 import SearchInput from '../components/SearchInput';
+import { booksAction } from '../store/books-slice';
 import classes from './SearchBooks.module.css';
 
 const SearchBook = (props) => {
+  const showLoading = useSelector(state => state.ui.isLoading);
+  const searchedBooks = useSelector(state => state.books.searchedBooks);
+  const dispatch = useDispatch();
 
   const resetSearch = () => {
-    props.onResetSearch();
+    dispatch(booksAction.resetSearch());
   }
   return (
     <div className={classes['search-books']}>
@@ -20,19 +25,18 @@ const SearchBook = (props) => {
           </button>
         </Link>
 
-       <SearchInput onSearch={props.onSearch}/>
+        <SearchInput />
       </div>
       <div className={classes['search-books-results']}>
-        {props.isLoading && <Loader />}
-        {!props.isLoading && !props.httpError && (
+        {showLoading && <Loader />}
+        {!showLoading && !props.httpError && (
           <ol className={classes['books-grid']}>
             <BooksList
-              moveBook={props.moveBook}
-              booksList={props.searchedBooks}
+              booksList={searchedBooks}
             />
           </ol>
         )}
-        {!props.isLoading && props.httpError && (
+        {!showLoading && props.httpError && (
           <ErrorWrapper httpError={props.httpError} />
         )}
       </div>

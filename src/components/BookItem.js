@@ -13,7 +13,7 @@ const BookItem = (props) => {
             backgroundImage: `url(${props.cover})`,
           }}
         ></div>
-        <BookShelfChanger book={props.book} moveBook={props.moveBook} />
+        <BookShelfChanger book={props.book} />
       </div>
       <div className={classes['book-title']}>{props.title}</div>
       <div className={classes['book-authors']}>

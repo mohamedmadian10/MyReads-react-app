@@ -1,16 +1,17 @@
-import { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import classes from './BookShelfChanger.module.css';
+import { updateBook } from '../store/books-actions';
+
 
 const BookShelfChanger = (props) => {
-  const [selectedCategory, setSelectedCategory] = useState('');
+  const dispatch = useDispatch();
 
   const selectValueHandler = (event) => {
-    setSelectedCategory(event.target.value);
-    props.moveBook(props.book, event.target.value);
+    dispatch(updateBook(props.book, event.target.value))
   };
   return (
     <div className={classes['book-shelf-changer']}>
-      <select value={selectedCategory} onChange={selectValueHandler}>
+      <select value='' onChange={selectValueHandler}>
         <option value='' disabled>
           Move to...
         </option>

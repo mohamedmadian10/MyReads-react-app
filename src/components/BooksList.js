@@ -12,7 +12,6 @@ const BooksList = (props) => {
               title={book.title}
               cover={book.imageLinks.thumbnail}
               authors={book.authors}
-              moveBook={props.moveBook}
             />
           </li>
         ))}

@@ -1,3 +1,5 @@
+import { useSelector } from 'react-redux';
+
 import classes from './MyReads.module.css';
 import Header from '../components/UI/Header';
 import BooksCategory from '../components/BooksCategory';
@@ -7,6 +9,7 @@ import { Link } from 'react-router-dom';
 
 
 const MyReads = (props) => {
+  const showLoading = useSelector(state => state.ui.isLoading);
   const categoryBooks = [
     { key: 'currentlyReading', name: 'Currently Reading' },
     { key: 'wantToRead', name: 'Want to Read' },
@@ -15,17 +18,16 @@ const MyReads = (props) => {
   return (
     <div className='list-books'>
       <Header />
-      {props.isLoading && <Loader />}
-      {!props.isLoading && !props.httpError && (
+      {showLoading && <Loader />}
+      {!showLoading && !props.httpError && (
         <div className={classes['list-books-content}']}>
           <BooksCategory
-            books={props.books}
             categoryBooks={categoryBooks}
-            moveBook={props.moveBook}
+           
           />
         </div>
       )}
-      {!props.isLoading && props.httpError && (
+      {!showLoading && props.httpError && (
         <ErrorWrapper httpError={props.httpError} />
       )}
       <div className='open-search'>
